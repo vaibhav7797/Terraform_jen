@@ -1,4 +1,4 @@
- pipeline {
+pipeline {
     agent {
         kubernetes {
             yaml '''
@@ -47,7 +47,7 @@
                   volumeMounts:
                   - mountPath: /var/run/docker.sock
                     name: hostpath-privileged
-                    - name: terraform-aws
+                - name: terraform-aws
                   image: hashicorp/terraform:1.0.8
                   command:
                   - cat
@@ -64,17 +64,12 @@
       stages {
           stage('Git Clone') {              
             steps {  
-                git url: 'https://github.com/vaibhav7797/Terraform_jen.git', branch: 'master',
-                 credentialsId: 'Terraform-credential'
+               checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vaibhav7797/Terraform_jen']]])
             }
         }
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+        
 
-        stage ("terraform init") {
+       stage ("terraform init") {
             steps {
                echo 'Terraform init...'
               withCredentials([string(credentialsId: 'moneyceo_prod_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'moneyceo_prod_secret_key', variable: 'jenkins_secret_key')]) {
@@ -83,4 +78,25 @@
                     sh 'terraform init'
             }
         }
+              
+      }
+    }
+  }
+        stage ("terraform plan") {
+            steps {
+               echo 'Terraform plan...'
+              withCredentials([string(credentialsId: 'moneyceo_prod_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'moneyceo_prod_secret_key', variable: 'jenkins_secret_key')]) {
+                container("terraform-aws") {
+                  script {
+                    sh 'terraform plan'
+            }
+        }
+              
+      }
+    }
+  }
+  
+      }
 }
+
+       
