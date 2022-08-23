@@ -72,7 +72,7 @@ pipeline {
        stage ("terraform init") {
             steps {
                echo 'Terraform init...'
-              withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
+              withCredentials([string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
                       sh 'apt update && apt install curl -y && apt install unzip -y && apt install sudo -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip  && sudo ./aws/install && aws --version'
@@ -89,7 +89,7 @@ pipeline {
         stage ("terraform plan") {
             steps {
                echo 'Terraform plan...'
-              withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
+              withCredentials([string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
                     sh 'terraform plan'
@@ -102,7 +102,7 @@ pipeline {
         stage ("terraform action") {
             steps {
                echo 'Terraform action...'
-              withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
+              withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
                     sh ('terraform ${action} --auto-approve')
