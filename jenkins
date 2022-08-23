@@ -100,6 +100,21 @@ pipeline {
       }
     }
   }
+  stage('code-scanner') { 
+            
+            steps {
+              echo 'code scanning....'
+              withCredentials([string(credentialsId: 'sonarqube-secret', variable: 'sonarqube-secret')]) {
+              container("jdk") {
+                sh 'sonar-scanner \
+                    -Dsonar.projectKey=cd_test_terraform_code \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=https://sonarqube.shared.youareaceo.com \
+                    -Dsonar.login=sqp_951ff995f44a22931b069946c4da98b17adadb88'
+             }
+            }
+           }  
+          }
         stage ("terraform apply") {
             steps {
                echo 'Terraform apply...'
