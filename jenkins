@@ -106,8 +106,13 @@ pipeline {
                 container("terraform-aws") {
                   script {
                     sh ('terraform ${action} --auto-approve')
+  }
+  }
+  }
   
       }
+}
+}
 }
 
        
