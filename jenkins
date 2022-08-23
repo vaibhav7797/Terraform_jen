@@ -105,9 +105,10 @@ pipeline {
               withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
-                    sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} '
+                    echo "Terraform action is --> ${action}"
+                    sh 'export AWS_ACCESS_KEY_ID=${cd_access_key_id01} && export AWS_SECRET_ACCESS_KEY=${cd_secret_access_key_id01} '
                     sh 'aws --version && terraform --version'
-                    sh ('terraform ${action} --auto-approve')
+                    sh ("terraform ${action} --auto-approve")
   }
   }
   }
