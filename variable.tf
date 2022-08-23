@@ -23,3 +23,7 @@ variable "availability_zones" {
 variable "type" {
 
 }
+
+variable "assign_ipv6_address_on_creation" {
+
+}
