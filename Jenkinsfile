@@ -88,7 +88,11 @@ pipeline {
             withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
-                    sh 'terraform fmt'
+                    sh 'apt update && apt install curl -y && apt install unzip -y && apt install sudo -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip  && sudo ./aws/install && aws --version'
+                      sh 'apt install wget -y && apt install git -y && wget --quiet https://releases.hashicorp.com/terraform/1.0.8/terraform_1.0.8_linux_amd64.zip && unzip terraform_1.0.8_linux_amd64.zip && mv terraform /usr/bin && terraform --version'
+                      sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} '
+                      sh 'aws --version && terraform --version'
+                      sh 'terraform fmt'
                   }
            }
        }
@@ -100,10 +104,6 @@ pipeline {
               withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
-                      sh 'apt update && apt install curl -y && apt install unzip -y && apt install sudo -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip  && sudo ./aws/install && aws --version'
-                      sh 'apt install wget -y && apt install git -y && wget --quiet https://releases.hashicorp.com/terraform/1.0.8/terraform_1.0.8_linux_amd64.zip && unzip terraform_1.0.8_linux_amd64.zip && mv terraform /usr/bin && terraform --version'
-                      sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} '
-                      sh 'aws --version && terraform --version'
                       sh 'terraform init'
             }
         }
