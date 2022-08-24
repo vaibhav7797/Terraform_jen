@@ -82,7 +82,18 @@ pipeline {
             }
            }  
           }
-
+       stage ("terraform format") {
+           steps {
+            echo 'terraform format...'
+            withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+                container("terraform-aws") {
+                  script {
+                    sh 'terraform fmt --recursive'
+                  }
+           }
+       }
+       }
+       }
        stage ("terraform init") {
             steps {
                echo 'Terraform init...'
@@ -100,7 +111,7 @@ pipeline {
       }
     }
   }
-        stage ("terraform plan & Validate") {
+        stage ("terraform plan & validate") {
             steps {
                echo 'Terraform plan & Terraform Validate...'
               withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
