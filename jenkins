@@ -67,7 +67,21 @@ pipeline {
                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vaibhav7797/Terraform_jen']]])
             }
         }
-        
+        stage('code-scanner') { 
+                  
+                  steps {
+                    echo 'code scanning....'
+                    withCredentials([string(credentialsId: 'sonarqube-secret', variable: 'sonarqube-secret')]) {
+                    container("jdk") {
+                      sh 'sonar-scanner \
+                          -Dsonar.projectKey=cd_test_terraform_code \
+                          -Dsonar.sources=. \
+                          -Dsonar.host.url=https://sonarqube.shared.youareaceo.com \
+                          -Dsonar.login=sqp_951ff995f44a22931b069946c4da98b17adadb88'
+             }
+            }
+           }  
+          }
 
        stage ("terraform init") {
             steps {
@@ -86,43 +100,41 @@ pipeline {
       }
     }
   }
-        stage ("terraform plan") {
+        stage ("terraform plan & Validate") {
             steps {
-               echo 'Terraform plan...'
+               echo 'Terraform plan & Terraform Validate...'
               withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
 
-                    sh 'terraform plan'
+                    sh 'terraform plan && terraform validate'
             }
         }
               
       }
     }
   }
-        stage('code-scanner') { 
-                  
-                  steps {
-                    echo 'code scanning....'
-                    withCredentials([string(credentialsId: 'sonarqube-secret', variable: 'sonarqube-secret')]) {
-                    container("jdk") {
-                      sh 'sonar-scanner \
-                          -Dsonar.projectKey=cd_test_terraform_code \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=https://sonarqube.shared.youareaceo.com \
-                          -Dsonar.login=sqp_951ff995f44a22931b069946c4da98b17adadb88'
-             }
-            }
-           }  
-          }
+      
+        stage("Approval") {
+              steps {
+                echo 'Approve..'
+                 withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+            container("terraform-aws") {
+                script {
+                  def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+    }
+  }
+}
+}
+}
         stage ("terraform apply") {
             steps {
                 echo 'Terraform apply...'
-              withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
-                container("terraform-aws") {
+                withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+            container("terraform-aws") {
                   script {
-                      sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key}'
-                      sh ("terraform apply --auto-approve")
+                      sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} && terraform destroy --auto-approve '
+                      
   }
   }
   }
