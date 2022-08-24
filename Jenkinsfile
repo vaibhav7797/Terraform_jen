@@ -88,7 +88,7 @@ pipeline {
             withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
-                    sh 'terraform fmt --recursive'
+                    sh 'terraform fmt'
                   }
            }
        }
