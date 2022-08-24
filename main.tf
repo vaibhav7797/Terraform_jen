@@ -2,13 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-terraform {
-  backend "s3" {
-    bucket = "clouddrove-secure-bucket-test-private"
-    key    = "terraform.tfstate"
-    region = "us-east-1"
-  }
-}
 
 module "vpc" {
   source  = "clouddrove/vpc/aws"
