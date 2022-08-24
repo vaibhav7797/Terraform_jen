@@ -140,11 +140,11 @@ pipeline {
 }
         stage ("terraform action") {
             steps {
-                echo 'Terraform apply '
+                echo 'Terraform action '
                 withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
             container("terraform-aws") {
                   script {
-                      sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} && "terraform ${action} -lock=false -auto-approve"'
+                      sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} && terraform ${action} -auto-approve'
 
   }
   }
