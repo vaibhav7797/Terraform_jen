@@ -104,7 +104,7 @@ pipeline {
               withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
-                      sh 'terraform init -backend-config=encrypt=true'
+                      sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} && terraform init'
             }
         }
               
@@ -132,7 +132,7 @@ pipeline {
                 container("terraform-aws") {
                   script {
 
-                    sh 'terraform plan '
+                    sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} && terraform plan '
             }
         }
               
