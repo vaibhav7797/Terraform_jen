@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-#terraform {
+terraform {
   backend "s3" {
     bucket = "my-dev-tf-state-bucket07797"
     key    = "main"
@@ -10,7 +10,7 @@ provider "aws" {
   }
 } 
 
-# module "vpc" {
+module "vpc" {
   source  = "clouddrove/vpc/aws"
   version = "0.15.1"
 
