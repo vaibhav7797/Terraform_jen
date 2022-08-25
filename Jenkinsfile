@@ -85,7 +85,7 @@ pipeline {
        stage ("terraform format") {
            steps {
             echo 'terraform format...'
-            withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+            withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
                     sh 'apt update && apt install curl -y && apt install unzip -y && apt install sudo -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip  && sudo ./aws/install && aws --version'
@@ -101,7 +101,7 @@ pipeline {
        stage ("terraform init") {
             steps {
                echo 'Terraform init...'
-              withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+              withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
                       sh 'terraform init'
@@ -114,7 +114,7 @@ pipeline {
         stage ("terraform plan & validate") {
             steps {
                echo 'Terraform plan & Terraform Validate...'
-              withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+              withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
 
@@ -129,7 +129,7 @@ pipeline {
         stage("Approval") {
             steps {    
                 echo 'Approve..'
-                 withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+                 withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
             container("terraform-aws") {
                 script {
                   def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
@@ -141,7 +141,7 @@ pipeline {
         stage ("terraform action") {
             steps {
                 echo 'Terraform action '
-                withCredentials([string(credentialsId: 'cd_access_key_id01', variable: 'jenkins_access_key'),string(credentialsId: 'cd_secret_access_key_id01', variable: 'jenkins_secret_key')]) {
+                withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
             container("terraform-aws") {
                   script {
                       sh 'export AWS_ACCESS_KEY_ID=${jenkins_access_key} && export AWS_SECRET_ACCESS_KEY=${jenkins_secret_key} && terraform ${action} -auto-approve'
