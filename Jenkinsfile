@@ -104,7 +104,7 @@ pipeline {
               withCredentials([string(credentialsId: 'cd_test_access_key', variable: 'jenkins_access_key'),string(credentialsId: 'cd_test_secret_key', variable: 'jenkins_secret_key')]) {
                 container("terraform-aws") {
                   script {
-                      sh 'terraform init -backend-config=encrypt=true"'
+                      sh 'terraform init -backend-config=encrypt=true'
             }
         }
               
